@@ -20,13 +20,12 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Set up Gradle Wrapper
-        working-directory: ./launcher
-        run: gradle wrapper
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v3
 
       - name: Build Release APK with Gradle
         working-directory: ./launcher
-        run: ./gradlew assembleRelease
+        run: gradle assembleRelease --stacktrace
 
       - name: Copy & Prepare Artifacts
         run: |
