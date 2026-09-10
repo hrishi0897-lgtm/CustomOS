@@ -39,38 +39,7 @@ jobs:
           force-avd-creation: true
           emulator-options: -no-window -gpu swiftshader_indirect -no-audio -no-boot-anim -camera-back none
           disable-animations: true
-          script: |
-            adb wait-for-device
-            while [ "$(adb shell getprop sys.boot_completed | tr -d '\r')" != "1" ]; do sleep 2; done
-            
-            # Display configuration: 1080x2400 @ 420 dpi
-            adb shell wm size 1080x2400
-            adb shell wm density 420
-
-            # Install Launcher
-            if [ -f artifacts/CustomOS-Launcher.apk ]; then
-              adb install -r -g artifacts/CustomOS-Launcher.apk
-              adb shell cmd package set-home-activity com.customos.launcher/.MainActivity
-            fi
-
-            # Install Overlays
-            if [ -f artifacts/CustomOS-Overlay-Framework.apk ]; then
-              adb install -r artifacts/CustomOS-Overlay-Framework.apk
-              adb shell cmd overlay enable com.customos.overlay.framework || true
-            fi
-            if [ -f artifacts/CustomOS-Overlay-SystemUI.apk ]; then
-              adb install -r artifacts/CustomOS-Overlay-SystemUI.apk
-              adb shell cmd overlay enable com.customos.overlay.systemui || true
-            fi
-
-            # Launch Home
-            adb shell am start -c android.intent.category.HOME -a android.intent.action.MAIN
-            sleep 5
-
-            # Screencap
-            mkdir -p screenshots
-            adb shell screencap -p /sdcard/launcher_screen.png
-            adb pull /sdcard/launcher_screen.png screenshots/launcher_screen.png
+          script: bash ./run_test.sh
 
       - name: Upload Emulator Test Screenshots
         uses: actions/upload-artifact@v4
