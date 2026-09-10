@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Backgrounds: Pitch Black -->
+    <!-- Panels: Pitch Black -->
     <color name="quick_settings_background">#FF000000</color>
     <color name="notification_shade_background">#FF000000</color>
     <color name="qs_tile_background">#FF000000</color>
+    <color name="notification_material_background_dark">#FF000000</color>
     
-    <!-- Hairline borders and dividers -->
+    <!-- Dividers & Hairlines -->
     <color name="qs_tile_stroke">#FF1F1F1F</color>
     <color name="notification_divider_color">#FF1F1F1F</color>
+    <color name="notification_shelf_background">#FF000000</color>
     
     <!-- Text & Active States -->
     <color name="qs_tile_label">#FFFFFFFF</color>
     <color name="qs_tile_active_background">#FFE5E5E5</color>
     <color name="qs_tile_active_text">#FF000000</color>
+    
+    <!-- Lock Screen Polish -->
+    <color name="keyguard_clock_color">#FFFFFFFF</color>
+    <color name="keyguard_owner_info_color">#FF737373</color>
 </resources>

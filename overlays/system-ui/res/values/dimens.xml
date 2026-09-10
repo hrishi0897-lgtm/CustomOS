@@ -2,5 +2,6 @@
 <resources>
     <dimen name="qs_corner_radius">0dp</dimen>
     <dimen name="notification_corner_radius">0dp</dimen>
+    <dimen name="notification_shadow_radius">0dp</dimen>
     <dimen name="qs_tile_margin_horizontal">2dp</dimen>
 </resources>
