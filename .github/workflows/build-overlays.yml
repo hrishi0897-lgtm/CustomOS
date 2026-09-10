@@ -1,0 +1,51 @@
+name: Build CustomOS Overlays
+
+on:
+  push:
+    paths:
+      - 'overlays/**'
+      - '.github/workflows/build-overlays.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+
+      - name: Set up Android SDK & AAPT2
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y aapt zipalign apksigner
+
+      - name: Build Framework Overlay APK
+        run: |
+          mkdir -p output
+          aapt package -f -m \
+            -M overlays/framework/AndroidManifest.xml \
+            -S overlays/framework/res \
+            -I /usr/local/lib/android/sdk/platforms/android-34/android.jar \
+            -F output/CustomOS-Overlay-Framework-unsigned.apk
+          
+          # Sign with standard debug key
+          keytool -genkey -v -keystore debug.keystore -alias androiddebugkey -storepass android -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=AndroidDebug,O=Android,C=US"
+          zipalign -v -p 4 output/CustomOS-Overlay-Framework-unsigned.apk output/CustomOS-Overlay-Framework.apk
+          apksigner sign --ks debug.keystore --ks-pass pass:android --key-pass pass:android output/CustomOS-Overlay-Framework.apk
+
+      - name: Build SystemUI Overlay APK
+        run: |
+          aapt package -f -m \
+            -M overlays/system-ui/AndroidManifest.xml \
+            -S overlays/system-ui/res \
+            -I /usr/local/lib/android/sdk/platforms/android-34/android.jar \
+            -F output/CustomOS-Overlay-SystemUI-unsigned.apk
+          
+          zipalign -v -p 4 output/CustomOS-Overlay-SystemUI-unsigned.apk output/CustomOS-Overlay-SystemUI.apk
+          apksigner sign --ks debug.keystore --ks-pass pass:android --key-pass pass:android output/CustomOS-Overlay-SystemUI.apk
+
+      - name: Upload Overlay Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: customos-overlays
+          path: output/*.apk

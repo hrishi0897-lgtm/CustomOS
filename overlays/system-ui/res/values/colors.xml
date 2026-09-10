@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Backgrounds: Pitch Black -->
+    <color name="quick_settings_background">#FF000000</color>
+    <color name="notification_shade_background">#FF000000</color>
+    <color name="qs_tile_background">#FF000000</color>
+    
+    <!-- Hairline borders and dividers -->
+    <color name="qs_tile_stroke">#FF1F1F1F</color>
+    <color name="notification_divider_color">#FF1F1F1F</color>
+    
+    <!-- Text & Active States -->
+    <color name="qs_tile_label">#FFFFFFFF</color>
+    <color name="qs_tile_active_background">#FFE5E5E5</color>
+    <color name="qs_tile_active_text">#FF000000</color>
+</resources>
