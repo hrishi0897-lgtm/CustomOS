@@ -3,4 +3,7 @@
     <style name="Theme.SystemUI.QuickSettings" parent="@android:style/Theme.DeviceDefault.NoActionBar">
         <item name="android:dialogCornerRadius">0dp</item>
     </style>
+    <style name="Widget.SystemUI.QS.Tile">
+        <item name="android:clipToOutline">false</item>
+    </style>
 </resources>
