@@ -39,6 +39,9 @@ adb shell cmd overlay enable --user 0 com.customos.overlay.framework || true
 adb shell cmd overlay enable --user 0 com.customos.overlay.systemui || true
 adb shell cmd overlay enable --user 0 com.customos.overlay.settings || true
 
+echo "==> Verifying active overlays in CI log..."
+adb shell cmd overlay list || true
+
 # Restart SystemUI
 adb shell pkill -f com.android.systemui || true
 sleep 5
@@ -51,20 +54,16 @@ sleep 3
 adb shell screencap -p /sdcard/screen_launcher.png
 adb pull /sdcard/screen_launcher.png screenshots/screen_launcher.png
 
-# 2. Expand Quick Settings via Top-Down Gesture Swipe
-# Ensure screen is on and unlocked before swiping
-adb shell input keyevent 82 # Unlock/dismiss basic lock
+# 2. Expand Quick Settings via Focus Tap + expand-settings command
+adb shell input tap 540 1200
 sleep 1
-# Drag status bar down twice to force full Quick Settings expansion
-adb shell input swipe 540 0 540 1400 300
-sleep 1
-adb shell input swipe 540 200 540 1600 300
-sleep 3
+adb shell cmd statusbar expand-settings || true
+sleep 4
 adb shell screencap -p /sdcard/screen_quicksettings.png
 adb pull /sdcard/screen_quicksettings.png screenshots/screen_quicksettings.png
 
-# Collapse status bar
-adb shell input keyevent 3
+# Collapse Statusbar
+adb shell cmd statusbar collapse || true
 sleep 1
 
 # 3. Lock Screen Keyguard Capture
@@ -76,4 +75,4 @@ sleep 3
 adb shell screencap -p /sdcard/screen_lockscreen.png
 adb pull /sdcard/screen_lockscreen.png screenshots/screen_lockscreen.png
 
-echo "==> All test states captured."
+echo "==> All test captures finished."
