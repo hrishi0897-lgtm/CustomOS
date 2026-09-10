@@ -1,0 +1,88 @@
+name: Test CustomOS in Headless AVD
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+
+      - name: Enable KVM Virtualization
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Download Build Artifacts
+        run: |
+          mkdir -p artifacts
+          # Use curl or gh run download via CLI to pull latest overlays and launcher
+          gh run download --repo hrishi0897-lgtm/CustomOS --name customos-overlays --dir artifacts/ || true
+          gh run download --repo hrishi0897-lgtm/CustomOS --name customos-launcher --dir artifacts/ || true
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Run Headless AVD & Install CustomOS Stack
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          force-avd-creation: true
+          emulator-options: -no-window -gpu swiftshader_indirect -no-audio -no-boot-anim -camera-back none
+          disable-animations: false
+          script: |
+            # 1. Wait for system boot
+            adb wait-for-device
+            adb shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done;'
+            
+            # 2. Configure display density to 420 dpi (Standard Phone)
+            adb shell wm density 420
+            adb shell wm size 1080x2400
+            
+            # 3. Install custom AMOLED Minimal launcher
+            if [ -f artifacts/CustomOS-Launcher.apk ]; then
+              adb install -r -g artifacts/CustomOS-Launcher.apk
+              # Set as default home app
+              adb shell cmd package set-home-activity com.customos.launcher/.MainActivity
+            fi
+
+            # 4. Install and enable Framework & SystemUI RRO Overlays
+            if [ -f artifacts/CustomOS-Overlay-Framework.apk ]; then
+              adb install -r artifacts/CustomOS-Overlay-Framework.apk
+              adb shell cmd overlay enable com.customos.overlay.framework
+            fi
+            if [ -f artifacts/CustomOS-Overlay-SystemUI.apk ]; then
+              adb install -r artifacts/CustomOS-Overlay-SystemUI.apk
+              adb shell cmd overlay enable com.customos.overlay.systemui
+            fi
+
+            # 5. Push boot animation to system media
+            adb root || true
+            adb remount || true
+            adb push bootanimation/bootanimation.zip /data/local/bootanimation.zip || true
+
+            # 6. Launch home activity and settle UI
+            adb shell am start -c android.intent.category.HOME -a android.intent.action.MAIN
+            sleep 4
+
+            # 7. Capture verification screenshots
+            mkdir -p screenshots
+            adb shell screencap -p /sdcard/launcher_screen.png
+            adb pull /sdcard/launcher_screen.png screenshots/launcher_screen.png
+
+      - name: Upload Emulator Test Screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: emulator-screenshots
+          path: screenshots/*.png
