@@ -7,4 +7,6 @@
     <dimen name="qs_tile_margin_horizontal">2dp</dimen>
     <dimen name="qs_tile_corner_radius">0dp</dimen>
     <dimen name="button_corner_radius">0dp</dimen>
+    <dimen name="rounded_slider_corner_radius">0dp</dimen>
+    <dimen name="rounded_slider_background_rounded_corner_radius">0dp</dimen>
 </resources>
