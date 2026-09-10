@@ -75,4 +75,10 @@ sleep 3
 adb shell screencap -p /sdcard/screen_lockscreen.png
 adb pull /sdcard/screen_lockscreen.png screenshots/screen_lockscreen.png
 
+# 4. Capture Settings App
+adb shell am start -a android.settings.SETTINGS
+sleep 3
+adb shell screencap -p /sdcard/screen_settings.png
+adb pull /sdcard/screen_settings.png screenshots/screen_settings.png
+
 echo "==> All test captures finished."
