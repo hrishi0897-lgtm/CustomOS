@@ -25,7 +25,6 @@ jobs:
       - name: Download Build Artifacts
         run: |
           mkdir -p artifacts
-          # Use curl or gh run download via CLI to pull latest overlays and launcher
           gh run download --repo hrishi0897-lgtm/CustomOS --name customos-overlays --dir artifacts/ || true
           gh run download --repo hrishi0897-lgtm/CustomOS --name customos-launcher --dir artifacts/ || true
         env:
@@ -37,46 +36,38 @@ jobs:
           api-level: 34
           target: google_apis
           arch: x86_64
-          profile: pixel_6
           force-avd-creation: true
           emulator-options: -no-window -gpu swiftshader_indirect -no-audio -no-boot-anim -camera-back none
-          disable-animations: false
+          disable-animations: true
           script: |
-            # 1. Wait for system boot
             adb wait-for-device
-            adb shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done;'
+            while [ "$(adb shell getprop sys.boot_completed | tr -d '\r')" != "1" ]; do sleep 2; done
             
-            # 2. Configure display density to 420 dpi (Standard Phone)
-            adb shell wm density 420
+            # Display configuration: 1080x2400 @ 420 dpi
             adb shell wm size 1080x2400
-            
-            # 3. Install custom AMOLED Minimal launcher
+            adb shell wm density 420
+
+            # Install Launcher
             if [ -f artifacts/CustomOS-Launcher.apk ]; then
               adb install -r -g artifacts/CustomOS-Launcher.apk
-              # Set as default home app
               adb shell cmd package set-home-activity com.customos.launcher/.MainActivity
             fi
 
-            # 4. Install and enable Framework & SystemUI RRO Overlays
+            # Install Overlays
             if [ -f artifacts/CustomOS-Overlay-Framework.apk ]; then
               adb install -r artifacts/CustomOS-Overlay-Framework.apk
-              adb shell cmd overlay enable com.customos.overlay.framework
+              adb shell cmd overlay enable com.customos.overlay.framework || true
             fi
             if [ -f artifacts/CustomOS-Overlay-SystemUI.apk ]; then
               adb install -r artifacts/CustomOS-Overlay-SystemUI.apk
-              adb shell cmd overlay enable com.customos.overlay.systemui
+              adb shell cmd overlay enable com.customos.overlay.systemui || true
             fi
 
-            # 5. Push boot animation to system media
-            adb root || true
-            adb remount || true
-            adb push bootanimation/bootanimation.zip /data/local/bootanimation.zip || true
-
-            # 6. Launch home activity and settle UI
+            # Launch Home
             adb shell am start -c android.intent.category.HOME -a android.intent.action.MAIN
-            sleep 4
+            sleep 5
 
-            # 7. Capture verification screenshots
+            # Screencap
             mkdir -p screenshots
             adb shell screencap -p /sdcard/launcher_screen.png
             adb pull /sdcard/launcher_screen.png screenshots/launcher_screen.png
