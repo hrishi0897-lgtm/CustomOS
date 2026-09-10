@@ -2,6 +2,7 @@
 <resources>
     <dimen name="qs_corner_radius">0dp</dimen>
     <dimen name="qs_tile_corner_radius">0dp</dimen>
+    <dimen name="qs_tile_background_corner_radius">0dp</dimen>
     <dimen name="notification_corner_radius">0dp</dimen>
     <dimen name="notification_scrim_corner_radius">0dp</dimen>
     <dimen name="notification_shadow_radius">0dp</dimen>
@@ -10,4 +11,5 @@
     <dimen name="rounded_slider_background_rounded_corner_radius">0dp</dimen>
     <dimen name="qs_tile_margin_horizontal">2dp</dimen>
     <dimen name="qs_tile_margin_vertical">2dp</dimen>
+    <dimen name="qs_brightness_margin_bottom">8dp</dimen>
 </resources>
