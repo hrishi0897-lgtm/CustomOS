@@ -20,17 +20,17 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Set up Gradle 8.4
+      - name: Setup Gradle 8.4
         uses: gradle/actions/setup-gradle@v3
         with:
           gradle-version: '8.4'
           cache-disabled: true
 
-      - name: Build Release APK with Gradle
+      - name: Build Launcher APK
         working-directory: ./launcher
         run: gradle assembleRelease --no-daemon --stacktrace
 
-      - name: Copy & Prepare Artifacts
+      - name: Prepare Artifacts
         run: |
           mkdir -p output
           cp launcher/app/build/outputs/apk/release/*.apk output/CustomOS-Launcher.apk
