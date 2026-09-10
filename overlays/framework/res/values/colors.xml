@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Core Surface Palette -->
+    <color name="background_dark">#FF000000</color>
+    <color name="surface_dark">#FF0A0A0A</color>
+    <color name="primary_device_default_dark">#FFFFFFFF</color>
+    <color name="secondary_device_default_dark">#FF737373</color>
+    
+    <!-- AMOLED Accent Palette -->
+    <color name="accent_device_default_dark">#FFE5E5E5</color>
+    <color name="accent_device_default_light">#FFE5E5E5</color>
+    <color name="system_accent1_600">#FFE5E5E5</color>
+    <color name="system_accent2_600">#FF1F1F1F</color>
+    <color name="system_accent3_600">#FFFF5722</color>
+</resources>
