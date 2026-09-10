@@ -20,12 +20,15 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Set up Gradle
+      - name: Set up Gradle 8.4
         uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '8.4'
+          cache-disabled: true
 
       - name: Build Release APK with Gradle
         working-directory: ./launcher
-        run: gradle assembleRelease --stacktrace
+        run: gradle assembleRelease --no-daemon --stacktrace
 
       - name: Copy & Prepare Artifacts
         run: |
