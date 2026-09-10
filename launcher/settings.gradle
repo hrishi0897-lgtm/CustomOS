@@ -1,0 +1,2 @@
+rootProject.name = "CustomOS-Launcher"
+include ':app'
