@@ -26,6 +26,7 @@ fi
 
 # Install Launcher
 if [ -f artifacts/CustomOS-Launcher.apk ]; then
+  echo "==> Installing CustomOS-Launcher..."
   adb install -r -g artifacts/CustomOS-Launcher.apk
   adb shell cmd package set-home-activity com.customos.launcher/.MainActivity
 fi
@@ -50,12 +51,18 @@ sleep 3
 adb shell screencap -p /sdcard/screen_launcher.png
 adb pull /sdcard/screen_launcher.png screenshots/screen_launcher.png
 
-# 2. Expand Quick Settings Shade Completely & Capture
-adb shell cmd statusbar expand-settings
+# 2. Expand Quick Settings via Gesture Swipe & Capture
+# Swipe from top center (540, 0) to bottom (540, 1800) over 350ms
+adb shell input swipe 540 0 540 1800 350
+sleep 2
+# Secondary short swipe to ensure full QS tile expansion
+adb shell input swipe 540 300 540 1600 250
 sleep 3
 adb shell screencap -p /sdcard/screen_quicksettings.png
 adb pull /sdcard/screen_quicksettings.png screenshots/screen_quicksettings.png
-adb shell cmd statusbar collapse
+
+# Return Home
+adb shell input keyevent 3
 sleep 1
 
 # 3. Lock Screen Keyguard Capture
