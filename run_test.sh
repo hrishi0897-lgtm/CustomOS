@@ -8,19 +8,16 @@ while [ "$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" != "1
 done
 echo "==> Emulator boot completed."
 
-# Configure display properties
 adb shell wm size 1080x2400
 adb shell wm density 420
 adb shell cmd uimode night yes
+adb shell settings put secure theme_customization_overlay_packages '{"android.theme.customization.system_palette":"#000000","android.theme.customization.accent_color":"#FFFF5722","android.theme.customization.color_source":"preset"}' || true
 
-# Suppress dynamic Monet color generation
-adb shell settings put secure theme_customization_overlay_packages '{"android.theme.customization.system_palette":"#000000","android.theme.customization.accent_color":"#FFFFFF","android.theme.customization.theme_style":"SPRITZ"}' || true
-
-# Inject Pitch-Black Wallpaper into User Directory
+# Root Wallpaper Injection
 adb root || true
 sleep 1
 if [ -f assets/black_wallpaper.png ]; then
-  echo "==> Setting pure black wallpaper..."
+  echo "==> Injecting pure pitch-black wallpaper..."
   adb push assets/black_wallpaper.png /data/system/users/0/wallpaper || true
   adb push assets/black_wallpaper.png /data/system/users/0/wallpaper_lock || true
   adb shell chmod 600 /data/system/users/0/wallpaper* || true
@@ -34,14 +31,10 @@ if [ -f artifacts/CustomOS-Launcher.apk ]; then
   adb shell cmd package set-home-activity com.customos.launcher/.MainActivity
 fi
 
-# Install and Enable RRO Overlays for User 0
+# Install & Enable Overlays for User 0
 for apk in artifacts/CustomOS-Overlay-*.apk; do
-  if [ -f "$apk" ]; then
-    echo "==> Installing $apk..."
-    adb install -r -d "$apk" || true
-  fi
+  [ -f "$apk" ] && adb install -r "$apk" || true
 done
-
 adb shell cmd overlay enable --user 0 com.customos.overlay.framework || true
 adb shell cmd overlay enable --user 0 com.customos.overlay.systemui || true
 adb shell cmd overlay enable --user 0 com.customos.overlay.settings || true
@@ -52,29 +45,35 @@ sleep 5
 
 mkdir -p screenshots
 
-# 1. Launcher Home Screen
+# 1. Capture Launcher Home Screen
 adb shell am start -c android.intent.category.HOME -a android.intent.action.MAIN
 sleep 3
 adb shell screencap -p /sdcard/screen_launcher.png
 adb pull /sdcard/screen_launcher.png screenshots/screen_launcher.png
 
-# 2. Expanded Quick Settings Shade
-adb shell service call statusbar 1 || true
+# 2. Expand Quick Settings via Top-Down Gesture Swipe
+# Ensure screen is on and unlocked before swiping
+adb shell input keyevent 82 # Unlock/dismiss basic lock
 sleep 1
-adb shell service call statusbar 2 || true
-sleep 4
+# Drag status bar down twice to force full Quick Settings expansion
+adb shell input swipe 540 0 540 1400 300
+sleep 1
+adb shell input swipe 540 200 540 1600 300
+sleep 3
 adb shell screencap -p /sdcard/screen_quicksettings.png
 adb pull /sdcard/screen_quicksettings.png screenshots/screen_quicksettings.png
-adb shell service call statusbar 2 || true
+
+# Collapse status bar
+adb shell input keyevent 3
 sleep 1
 
-# 3. Lock Screen Keyguard
+# 3. Lock Screen Keyguard Capture
 adb shell locksettings set-pin 1234 || true
-adb shell input keyevent 26
+adb shell input keyevent 26  # Screen off
 sleep 2
-adb shell input keyevent 26
+adb shell input keyevent 26  # Screen on
 sleep 3
 adb shell screencap -p /sdcard/screen_lockscreen.png
 adb pull /sdcard/screen_lockscreen.png screenshots/screen_lockscreen.png
 
-echo "==> Test run and screenshot captures finished."
+echo "==> All test states captured."
