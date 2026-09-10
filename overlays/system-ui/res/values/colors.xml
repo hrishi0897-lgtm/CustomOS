@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Shade & Panels: Pitch Black -->
+    <!-- Background and Panels -->
     <color name="quick_settings_background">#FF000000</color>
     <color name="notification_shade_background">#FF000000</color>
+    <color name="notification_material_background_dark">#FF000000</color>
+    <color name="notification_material_background_dimmed_color">#FF000000</color>
+    <color name="notification_section_header_color">#FF737373</color>
+    <color name="notification_shelf_background">#FF000000</color>
+
+    <!-- QS Tile States -->
     <color name="qs_tile_background">#FF000000</color>
     <color name="qs_tile_background_inactive">#FF0A0A0A</color>
     <color name="qs_tile_background_active">#FFE5E5E5</color>
-    <color name="notification_material_background_dark">#FF000000</color>
-    <color name="notification_section_header_color">#FF737373</color>
-    
-    <!-- Dividers & Hairlines -->
     <color name="qs_tile_stroke">#FF1F1F1F</color>
-    <color name="notification_divider_color">#FF1F1F1F</color>
-    <color name="notification_shelf_background">#FF000000</color>
+
+    <!-- Lockscreen Dynamic Text -->
+    <color name="keyguard_clock_color">#FFFFFFFF</color>
+    <color name="clock_text_color">#FFFFFFFF</color>
 </resources>

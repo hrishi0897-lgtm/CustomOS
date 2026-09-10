@@ -1,18 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Core Surface & Background -->
+    <!-- Core Surface Palette -->
     <color name="background_dark">#FF000000</color>
     <color name="surface_dark">#FF000000</color>
     <color name="primary_device_default_dark">#FFFFFFFF</color>
     <color name="secondary_device_default_dark">#FF737373</color>
+
+    <!-- Android 14 Dynamic Monet Neutral Black-Out -->
+    <color name="system_neutral1_0">#FF000000</color>
+    <color name="system_neutral1_10">#FF000000</color>
+    <color name="system_neutral1_50">#FF000000</color>
+    <color name="system_neutral1_100">#FF000000</color>
+    <color name="system_neutral1_200">#FF000000</color>
+    <color name="system_neutral1_300">#FF000000</color>
+    <color name="system_neutral1_400">#FF000000</color>
+    <color name="system_neutral1_500">#FF000000</color>
+    <color name="system_neutral1_600">#FF000000</color>
+    <color name="system_neutral1_700">#FF000000</color>
+    <color name="system_neutral1_800">#FF000000</color>
     <color name="system_neutral1_900">#FF000000</color>
     <color name="system_neutral1_1000">#FF000000</color>
+
+    <color name="system_neutral2_0">#FF000000</color>
+    <color name="system_neutral2_500">#FF000000</color>
     <color name="system_neutral2_900">#FF000000</color>
-    
-    <!-- Accent Palette -->
-    <color name="accent_device_default_dark">#FFE5E5E5</color>
-    <color name="accent_device_default_light">#FFE5E5E5</color>
+    <color name="system_neutral2_1000">#FF000000</color>
+
+    <!-- Accent Overrides -->
+    <color name="system_accent1_0">#FFFFFFFF</color>
+    <color name="system_accent1_100">#FFE5E5E5</color>
     <color name="system_accent1_600">#FFE5E5E5</color>
-    <color name="system_accent2_600">#FF1F1F1F</color>
     <color name="system_accent3_600">#FFFF5722</color>
 </resources>
