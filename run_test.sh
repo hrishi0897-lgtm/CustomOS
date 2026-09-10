@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-echo "==> Waiting for AVD emulator to boot..."
+echo "==> Waiting for AVD emulator to complete boot..."
 adb wait-for-device
 while [ "$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" != "1" ]; do
   sleep 2
@@ -51,18 +51,15 @@ sleep 3
 adb shell screencap -p /sdcard/screen_launcher.png
 adb pull /sdcard/screen_launcher.png screenshots/screen_launcher.png
 
-# 2. Expand Quick Settings via Gesture Swipe & Capture
-# Swipe from top center (540, 0) to bottom (540, 1800) over 350ms
-adb shell input swipe 540 0 540 1800 350
-sleep 2
-# Secondary short swipe to ensure full QS tile expansion
-adb shell input swipe 540 300 540 1600 250
-sleep 3
+# 2. Expand Quick Settings via Direct IPC Service Call & Capture
+# Service call 1 = expand notifications; Service call 2 = expand settings panel
+adb shell service call statusbar 1 || true
+sleep 1
+adb shell service call statusbar 2 || true
+sleep 4
 adb shell screencap -p /sdcard/screen_quicksettings.png
 adb pull /sdcard/screen_quicksettings.png screenshots/screen_quicksettings.png
-
-# Return Home
-adb shell input keyevent 3
+adb shell service call statusbar 2 || true  # collapse shade
 sleep 1
 
 # 3. Lock Screen Keyguard Capture
