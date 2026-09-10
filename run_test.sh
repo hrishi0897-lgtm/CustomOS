@@ -8,7 +8,7 @@ while [ "$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" != "1
 done
 echo "==> Emulator boot completed."
 
-# Display resolution & density: 1080x2400 @ 420 dpi (Standard Phone)
+# Display configuration: 1080x2400 @ 420 dpi (Standard Phone)
 adb shell wm size 1080x2400
 adb shell wm density 420
 
@@ -32,12 +32,27 @@ if [ -f artifacts/CustomOS-Overlay-SystemUI.apk ]; then
   adb shell cmd overlay enable com.customos.overlay.systemui || true
 fi
 
-# Launch CustomOS Home Screen
-adb shell am start -c android.intent.category.HOME -a android.intent.action.MAIN
-sleep 5
-
-# Capture Verification Screenshot
 mkdir -p screenshots
-adb shell screencap -p /sdcard/launcher_screen.png
-adb pull /sdcard/launcher_screen.png screenshots/launcher_screen.png
-echo "==> Screenshot captured successfully."
+
+# 1. Capture Launcher Home Screen
+adb shell am start -c android.intent.category.HOME -a android.intent.action.MAIN
+sleep 4
+adb shell screencap -p /sdcard/screen_launcher.png
+adb pull /sdcard/screen_launcher.png screenshots/screen_launcher.png
+
+# 2. Expand Notification Shade & Capture
+adb shell cmd statusbar expand-notifications
+sleep 2
+adb shell screencap -p /sdcard/screen_quicksettings.png
+adb pull /sdcard/screen_quicksettings.png screenshots/screen_quicksettings.png
+
+# 3. Collapse Shade & Go to Lock Screen
+adb shell cmd statusbar collapse
+adb shell input keyevent 26  # Power off
+sleep 1
+adb shell input keyevent 26  # Power on (wakes keyguard)
+sleep 2
+adb shell screencap -p /sdcard/screen_lockscreen.png
+adb pull /sdcard/screen_lockscreen.png screenshots/screen_lockscreen.png
+
+echo "==> All test screenshots captured successfully."
