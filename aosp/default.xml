@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+  <remote name="aosp"
+          fetch="https://android.googlesource.com"
+          review="android-review.googlesource.com" />
+  <default revision="refs/tags/android-14.0.0_r50"
+           remote="aosp"
+           sync-j="4" />
+</manifest>
